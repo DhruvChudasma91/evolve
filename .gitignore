@@ -1,0 +1,12 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Backend
+evolve-backend/target/
+
+# Frontend
+evolve-frontend/node_modules/
+
+# OS
+.DS_Store
