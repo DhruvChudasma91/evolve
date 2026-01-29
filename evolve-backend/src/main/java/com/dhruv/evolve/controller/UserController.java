@@ -1,0 +1,25 @@
+package com.dhruv.evolve.controller;
+
+import com.dhruv.evolve.dto.UserRequestDTO;
+import com.dhruv.evolve.dto.UserResponseDTO;
+import com.dhruv.evolve.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody UserRequestDTO userDTO) {
+
+        UserResponseDTO registeredUser = userService.registerUser(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
+    }
+}
