@@ -3,10 +3,12 @@ package com.dhruv.evolve.controller;
 import com.dhruv.evolve.dto.AuthDTO;
 import com.dhruv.evolve.dto.UserRequestDTO;
 import com.dhruv.evolve.dto.UserResponseDTO;
+import com.dhruv.evolve.entity.UserEntity;
 import com.dhruv.evolve.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +38,19 @@ public class UserController {
                     "message", e.getMessage()
             ));
         }
+    }
+    @GetMapping("/profile")
+    public ResponseEntity<UserResponseDTO> getCurrentProfile() {
+        UserEntity currentUser = userService.getCurrentUser();
+
+        UserResponseDTO userResponseDTO = UserResponseDTO.builder()
+                .id(currentUser.getId())
+                .username(currentUser.getUsername())
+                .email(currentUser.getEmail())
+                .createAt(currentUser.getCreatedAt())
+                .updatedAt(currentUser.getUpdatedAt())
+                .build();
+
+        return ResponseEntity.ok(userResponseDTO);
     }
 }
