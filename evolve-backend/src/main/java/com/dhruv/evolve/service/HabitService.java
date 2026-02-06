@@ -27,11 +27,14 @@ public class HabitService {
     }
 
     private HabitEntity toEntity(HabitDTO habitDTO, UserEntity user) {
+
+
         return HabitEntity.builder()
                 .title(habitDTO.getTitle())
                 .description(habitDTO.getDescription())
-                .hasSections(habitDTO.getHasSections() != null ? habitDTO.getHasSections() : false)
-                .active(true)
+                .hasSessions(habitDTO.getHasSessions() != null && habitDTO.getHasSessions())
+                .totalSessions(habitDTO.getTotalSessions() != null && habitDTO.getTotalSessions() > 0 ? habitDTO.getTotalSessions() : 1)
+                .active(habitDTO.getActive() != null? habitDTO.getActive() : true)
                 .user(user)
                 .build();
     }
@@ -41,10 +44,10 @@ public class HabitService {
                 .id(habitEntity.getId())
                 .title(habitEntity.getTitle())
                 .description(habitEntity.getDescription())
-                .hasSections(habitEntity.getHasSections())
+                .hasSessions(habitEntity.getHasSessions())
+                .totalSessions(habitEntity.getTotalSessions())
                 .active(habitEntity.getActive())
                 .createdAt(habitEntity.getCreatedAt())
-                .updatedAt(habitEntity.getUpdatedAt())
                 .build();
 
     }

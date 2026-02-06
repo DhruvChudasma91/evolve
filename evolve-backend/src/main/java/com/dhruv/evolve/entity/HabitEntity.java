@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +30,10 @@ public class HabitEntity {
     private String description;
 
     @Column(nullable = false)
-    private Boolean hasSections;
+    private Boolean hasSessions;
+
+    @Column(nullable = false)
+    private Integer totalSessions;
 
     @Column(nullable = false)
     private Boolean active;
@@ -40,22 +42,31 @@ public class HabitEntity {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @PrePersist
     public void prePersist() {
-        if (this.active == null) {
+
+        if(this.hasSessions == null) {
+            this.hasSessions = false;
+        }
+
+        if(this.totalSessions == null || this.totalSessions <= 0) {
+            this.totalSessions = 1;
+        }
+
+        if(this.hasSessions && this.totalSessions == 1) {
+            this.hasSessions = false;
+        }
+
+        if (this.totalSessions > 1) {
+            this.hasSessions = true;
+        }
+
+        if(this.active == null) {
             this.active = true;
         }
-        if (this.hasSections == null) {
-            this.hasSections = false;
-        }
     }
-
-
 }
