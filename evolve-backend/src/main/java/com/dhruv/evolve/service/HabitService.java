@@ -7,6 +7,8 @@ import com.dhruv.evolve.repository.HabitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class HabitService {
@@ -14,7 +16,7 @@ public class HabitService {
     private final UserService userService;
     private final HabitRepository habitRepository;
 
-    public HabitDTO createHabit(HabitDTO habitDTO) {
+    public HabitDTO saveHabit(HabitDTO habitDTO) {
         UserEntity user = userService.getCurrentUser();
 
         if(habitRepository.existsByTitleAndUserId(habitDTO.getTitle(), user.getId())) {
@@ -28,13 +30,9 @@ public class HabitService {
 
     private HabitEntity toEntity(HabitDTO habitDTO, UserEntity user) {
 
-
         return HabitEntity.builder()
                 .title(habitDTO.getTitle())
                 .description(habitDTO.getDescription())
-                .hasSessions(habitDTO.getHasSessions() != null && habitDTO.getHasSessions())
-                .totalSessions(habitDTO.getTotalSessions() != null && habitDTO.getTotalSessions() > 0 ? habitDTO.getTotalSessions() : 1)
-                .active(habitDTO.getActive() != null? habitDTO.getActive() : true)
                 .user(user)
                 .build();
     }
@@ -44,11 +42,14 @@ public class HabitService {
                 .id(habitEntity.getId())
                 .title(habitEntity.getTitle())
                 .description(habitEntity.getDescription())
-                .hasSessions(habitEntity.getHasSessions())
-                .totalSessions(habitEntity.getTotalSessions())
-                .active(habitEntity.getActive())
-                .createdAt(habitEntity.getCreatedAt())
+                .userId(habitEntity.getUser() != null ? habitEntity.getUser().getId() : null)
                 .build();
+    }
 
+    public List<HabitDTO> getHabitsForCurrentUser() {
+        UserEntity user = userService.getCurrentUser();
+        List<HabitEntity> habits = habitRepository.findByUserId(user.getId());
+
+        return habits.stream().map(this::toDTO).toList();
     }
 }

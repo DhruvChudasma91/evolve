@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface HabitRepository extends JpaRepository<HabitEntity, Long> {
 
-    List<HabitEntity> findByUserIdAndActiveTrue(Long userId);
+    List<HabitEntity> findByUserId(Long userId);
 
     Optional<HabitEntity> findByIdAndUserId(Long id, Long userId);
 

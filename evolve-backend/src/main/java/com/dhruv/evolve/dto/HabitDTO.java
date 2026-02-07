@@ -16,9 +16,5 @@ public class HabitDTO {
     private Long id;
     private String title;
     private String description;
-    private Boolean hasSessions;
-    private Integer totalSessions;
-    private Boolean active;
-    private LocalDateTime createdAt;
-
+    private Long userId;
 }

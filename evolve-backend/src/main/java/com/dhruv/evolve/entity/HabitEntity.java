@@ -29,44 +29,8 @@ public class HabitEntity {
     @Column(length = 500)
     private String description;
 
-    @Column(nullable = false)
-    private Boolean hasSessions;
-
-    @Column(nullable = false)
-    private Integer totalSessions;
-
-    @Column(nullable = false)
-    private Boolean active;
-
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @PrePersist
-    public void prePersist() {
-
-        if(this.hasSessions == null) {
-            this.hasSessions = false;
-        }
-
-        if(this.totalSessions == null || this.totalSessions <= 0) {
-            this.totalSessions = 1;
-        }
-
-        if(this.hasSessions && this.totalSessions == 1) {
-            this.hasSessions = false;
-        }
-
-        if (this.totalSessions > 1) {
-            this.hasSessions = true;
-        }
-
-        if(this.active == null) {
-            this.active = true;
-        }
-    }
 }
