@@ -52,4 +52,27 @@ public class HabitService {
 
         return habits.stream().map(this::toDTO).toList();
     }
+
+    public HabitDTO updateHabit(Long habitId, HabitDTO habitDTO) {
+
+        UserEntity user = userService.getCurrentUser();
+
+        HabitEntity existingHabit = habitRepository.findByIdAndUserId(habitId, user.getId())
+                .orElseThrow(() -> new RuntimeException("Habit not found or not accessible"));
+
+        existingHabit.setTitle(habitDTO.getTitle());
+        existingHabit.setDescription(habitDTO.getDescription());
+        existingHabit = habitRepository.save(existingHabit);
+
+        return toDTO(existingHabit);
+    }
+
+    public void removeHabit(Long habitId) {
+
+        UserEntity user = userService.getCurrentUser();
+        HabitEntity existingHabit = habitRepository.findByIdAndUserId(habitId, user.getId())
+                .orElseThrow(() -> new RuntimeException("Habit not found or not accessible"));
+
+        habitRepository.delete(existingHabit);
+    }
 }

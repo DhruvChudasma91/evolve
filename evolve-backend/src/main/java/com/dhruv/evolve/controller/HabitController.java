@@ -28,4 +28,17 @@ public class HabitController {
         List<HabitDTO> habits = habitService.getHabitsForCurrentUser();
         return  ResponseEntity.ok(habits);
     }
+
+    @PutMapping("/{habitId}")
+    public ResponseEntity<HabitDTO> updateHabit(@PathVariable Long habitId, @RequestBody HabitDTO habitDTO) {
+        HabitDTO updatedHabit = habitService.updateHabit(habitId, habitDTO);
+        return ResponseEntity.ok(updatedHabit);
+    }
+
+    @DeleteMapping("{habitId}")
+    public ResponseEntity<String> removeHabit(@PathVariable Long habitId) {
+        habitService.removeHabit(habitId);
+
+        return ResponseEntity.ok("Habit removed successfully.");
+    }
 }
