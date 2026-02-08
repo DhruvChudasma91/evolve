@@ -15,23 +15,21 @@ import java.util.List;
 public class DailyHabitController {
 
     private final DailyHabitService dailyHabitService;
-    @PostMapping("/{habitId}")
-    public ResponseEntity<String> addHabitToToday(@PathVariable Long habitId) {
-        dailyHabitService.addHabitToToday(habitId);
+    @PostMapping("/{entryId}")
+    public ResponseEntity<String> addHabitToToday(@PathVariable Long entryId) {
+        dailyHabitService.addHabitToToday(entryId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Habit added to today's list");
     }
     @GetMapping
     public ResponseEntity<List<DailyHabitDTO>> getTodayHabits() {
-
         List<DailyHabitDTO> todayHabits = dailyHabitService.getTodayHabits();
         return ResponseEntity.ok(todayHabits);
     }
-    @PutMapping("/{habitId}")
-    public ResponseEntity<String> markCompleted(@PathVariable Long habitId) {
-        dailyHabitService.markCompleted(habitId);
+    @PutMapping("/{entryId}/complete")
+    public ResponseEntity<String> markCompleted(@PathVariable Long entryId) {
+        dailyHabitService.markCompleted(entryId);
         return ResponseEntity.ok("Habit marked as completed");
     }
-
 
 }

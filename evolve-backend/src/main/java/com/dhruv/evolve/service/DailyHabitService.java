@@ -7,9 +7,7 @@ import com.dhruv.evolve.entity.UserEntity;
 import com.dhruv.evolve.repository.DailyHabitRepository;
 import com.dhruv.evolve.repository.HabitRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,17 +20,18 @@ public class DailyHabitService {
     private final DailyHabitRepository dailyHabitRepository;
     private final HabitRepository habitRepository;
 
+
     public void addHabitToToday(Long habitId) {
 
         UserEntity user = userService.getCurrentUser();
 
         HabitEntity habit = habitRepository.findByIdAndUserId(habitId, user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habit not found"));
+                .orElseThrow(() -> new RuntimeException("Habit not found"));
 
         LocalDate today = LocalDate.now();
 
         if(dailyHabitRepository.existsByUserIdAndHabitIdAndDate(user.getId(), habitId, today)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Habit already added for today");
+            throw new RuntimeException("Habit already added for today");
         }
 
         DailyHabitEntryEntity entry = DailyHabitEntryEntity.builder()
@@ -47,6 +46,7 @@ public class DailyHabitService {
     }
 
     public List<DailyHabitDTO> getTodayHabits() {
+
         UserEntity user = userService.getCurrentUser();
         List<DailyHabitEntryEntity> habits = dailyHabitRepository.findByUserIdAndDate(user.getId(), LocalDate.now());
 
@@ -57,7 +57,7 @@ public class DailyHabitService {
         UserEntity user = userService.getCurrentUser();
 
         DailyHabitEntryEntity entry = dailyHabitRepository.findByIdAndUserId(entryId, user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Daily habit not found"));
+                .orElseThrow(() -> new RuntimeException("Daily habit not found"));
 
         entry.setCompleted(true);
 
@@ -69,6 +69,7 @@ public class DailyHabitService {
                 .id(entryEntity.getId())
                 .userId(entryEntity.getUser().getId())
                 .habitId(entryEntity.getHabit().getId())
+                .date(entryEntity.getDate())
                 .completed(entryEntity.getCompleted())
                 .processed(entryEntity.getProcessed())
                 .build();
