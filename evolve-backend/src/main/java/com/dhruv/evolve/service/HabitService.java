@@ -3,6 +3,8 @@ package com.dhruv.evolve.service;
 import com.dhruv.evolve.dto.HabitDTO;
 import com.dhruv.evolve.entity.HabitEntity;
 import com.dhruv.evolve.entity.UserEntity;
+import com.dhruv.evolve.exception.ConflictException;
+import com.dhruv.evolve.exception.ResourceNotFoundException;
 import com.dhruv.evolve.repository.HabitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class HabitService {
         UserEntity user = userService.getCurrentUser();
 
         if(habitRepository.existsByTitleAndUserId(habitDTO.getTitle(), user.getId())) {
-            throw new RuntimeException("Habit with this title already exists");
+            throw new ConflictException("Habit with this title already exists");
         }
 
         HabitEntity newHabit = toEntity(habitDTO, user);
@@ -58,7 +60,7 @@ public class HabitService {
         UserEntity user = userService.getCurrentUser();
 
         HabitEntity existingHabit = habitRepository.findByIdAndUserId(habitId, user.getId())
-                .orElseThrow(() -> new RuntimeException("Habit not found or not accessible"));
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found or not accessible"));
 
         existingHabit.setTitle(habitDTO.getTitle());
         existingHabit.setDescription(habitDTO.getDescription());
@@ -71,7 +73,7 @@ public class HabitService {
 
         UserEntity user = userService.getCurrentUser();
         HabitEntity existingHabit = habitRepository.findByIdAndUserId(habitId, user.getId())
-                .orElseThrow(() -> new RuntimeException("Habit not found or not accessible"));
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found or not accessible"));
 
         habitRepository.delete(existingHabit);
     }

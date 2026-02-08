@@ -4,6 +4,9 @@ import com.dhruv.evolve.dto.AuthDTO;
 import com.dhruv.evolve.dto.UserRequestDTO;
 import com.dhruv.evolve.dto.UserResponseDTO;
 import com.dhruv.evolve.entity.UserEntity;
+import com.dhruv.evolve.exception.AuthenticationException;
+import com.dhruv.evolve.exception.ConflictException;
+import com.dhruv.evolve.exception.ResourceNotFoundException;
 import com.dhruv.evolve.repository.UserRepository;
 import com.dhruv.evolve.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +32,7 @@ public class UserService {
     public UserResponseDTO registerUser(UserRequestDTO userDTO) {
 
         if(userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new RuntimeException("Email is already registered");
+            throw new ConflictException("Email is already registered");
         }
 
         UserEntity newUser = UserEntity.builder()
@@ -87,7 +90,7 @@ public class UserService {
                     "user", getPublicUser(authDTO.getEmail())
             );
         } catch (Exception e) {
-            throw new RuntimeException("Invalid email or password");
+            throw new AuthenticationException("Invalid email or password");
         }
     }
 

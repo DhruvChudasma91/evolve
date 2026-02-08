@@ -4,6 +4,8 @@ import com.dhruv.evolve.dto.DailyHabitDTO;
 import com.dhruv.evolve.entity.DailyHabitEntryEntity;
 import com.dhruv.evolve.entity.HabitEntity;
 import com.dhruv.evolve.entity.UserEntity;
+import com.dhruv.evolve.exception.ConflictException;
+import com.dhruv.evolve.exception.ResourceNotFoundException;
 import com.dhruv.evolve.repository.DailyHabitRepository;
 import com.dhruv.evolve.repository.HabitRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +28,12 @@ public class DailyHabitService {
         UserEntity user = userService.getCurrentUser();
 
         HabitEntity habit = habitRepository.findByIdAndUserId(habitId, user.getId())
-                .orElseThrow(() -> new RuntimeException("Habit not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found"));
 
         LocalDate today = LocalDate.now();
 
         if(dailyHabitRepository.existsByUserIdAndHabitIdAndDate(user.getId(), habitId, today)) {
-            throw new RuntimeException("Habit already added for today");
+            throw new ConflictException("Habit already added for today");
         }
 
         DailyHabitEntryEntity entry = DailyHabitEntryEntity.builder()
@@ -57,7 +59,7 @@ public class DailyHabitService {
         UserEntity user = userService.getCurrentUser();
 
         DailyHabitEntryEntity entry = dailyHabitRepository.findByIdAndUserId(entryId, user.getId())
-                .orElseThrow(() -> new RuntimeException("Daily habit not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Daily habit not found"));
 
         entry.setCompleted(true);
 
