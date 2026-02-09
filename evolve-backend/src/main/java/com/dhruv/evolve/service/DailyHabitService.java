@@ -66,6 +66,8 @@ public class DailyHabitService {
         dailyHabitRepository.save(entry);
     }
 
+
+
     public DailyHabitDTO toDTO(DailyHabitEntryEntity entryEntity) {
         return DailyHabitDTO.builder()
                 .id(entryEntity.getId())
